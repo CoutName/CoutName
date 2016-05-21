@@ -6,6 +6,7 @@ void printBigSquare(){
 void printcuemao(){
 }
 void printhuanchin(){
+	cout<<"huanchin";
 }
 void printBoBoya(){
 }
