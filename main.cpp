@@ -2,6 +2,7 @@
 using namespace std;
 
 void printBigSquare(){
+	cout<<"algorithm is GGing."<<endl<<endl;
 }
 void printcuemao(){
 }
