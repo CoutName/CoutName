@@ -4,6 +4,7 @@ using namespace std;
 void printBigSquare(){
 }
 void printcuemao(){
+	cout<<"maooooo"<<endl;
 }
 void printhuanchin(){
 	cout<<"huanchin";
