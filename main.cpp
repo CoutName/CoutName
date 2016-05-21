@@ -8,6 +8,11 @@ void printcuemao(){
 void printhuanchin(){
 }
 void printBoBoya(){
+	cout<<"BoBoHuang is me , I print my name~~"<<endl;
+	cout<<endl<<endl;
+	for(int i=1; i<4; i++){
+		cout<<"the "<<i<<" time iteration"<<endl;
+	}
 }
 
 
