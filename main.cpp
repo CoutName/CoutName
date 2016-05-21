@@ -5,6 +5,7 @@ void printBigSquare(){
 	cout<<"algorithm is GGing."<<endl<<endl;
 }
 void printcuemao(){
+	cout<<"maooooo"<<endl;
 }
 void printhuanchin(){
 	cout<<"huanchin";
