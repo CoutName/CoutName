@@ -13,6 +13,7 @@ public:
 	string type;
 
 	vector<Gate*> Y;
+	vector<string> port;
 	Gate* A;
 	Gate* B;
 };

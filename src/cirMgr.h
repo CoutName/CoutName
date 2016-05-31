@@ -20,8 +20,8 @@ public:
 	void print();
 
 	GateMap gateMap;
-
-	
 };
+
+string wireName(string);
 
 #endif
