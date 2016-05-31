@@ -28,17 +28,30 @@ bool CirMgr::read(string file){
 		}
 				
 		if(status=="") continue;
-        if(status=="in" || status=="out" || status=="wire"){
+        if(status=="in"){
 			name=wireName(tok);
 			Gate* g= new Gate(name,status);
 			wireMap.insert(GatePair(name,g));
-			if(status!="wire") gateMap.insert(GatePair(name,g));			
+			_gateMap.insert(GatePair(name,g));
+			_piList.push_back(g);
+		}
+		else if(status=="out"){
+			name=wireName(tok);
+			Gate* g= new Gate(name,status);
+			wireMap.insert(GatePair(name,g));
+			_gateMap.insert(GatePair(name,g));
+			_poList.push_back(g);
+		}
+		else if(status=="wire"){
+			name=wireName(tok);
+			Gate* g= new Gate(name,status);
+			wireMap.insert(GatePair(name,g));
 		}
 		else{ //NOT1. NOR2. NAND2 
 			if(line==1){ 
 				name=tok;
 				Gate* g= new Gate(name,status);
-				gateMap.insert(GatePair(name,g));
+				_gateMap.insert(GatePair(name,g));
 				++line; continue; 
 			}
 			if(tok=="endmodule") break;
@@ -47,7 +60,7 @@ bool CirMgr::read(string file){
 			string content=tok.substr(3,tok.find(")")-3);
 			
 			Gate* n= (*wireMap.find(content)).second;
-			Gate* gate= (*gateMap.find(name)).second;
+			Gate* gate= (*_gateMap.find(name)).second;
 			if(head=="A"){
 				n->Y.push_back(gate);
 				n->port.push_back(head);
@@ -84,7 +97,7 @@ bool CirMgr::read(string file){
 }
 void CirMgr::print(){
 	cout<<"gateMap:"<<endl;
-	for(GateMap::iterator i=gateMap.begin();i!=gateMap.end();++i){
+	for(GateMap::iterator i=_gateMap.begin();i!=_gateMap.end();++i){
 		Gate* g=(*i).second;
 		cout<<(*i).first<<" "<<g->type<<endl;
 		if(g->A) cout<<"A: "<<g->A->name<<endl;

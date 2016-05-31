@@ -8,10 +8,12 @@
 #include<map>
 #include"Gate.h"
 using namespace std;
+
 class CirMgr
 {
 typedef map<string, Gate*> GateMap;
 typedef pair<string, Gate*> GatePair;
+typedef vector<Gate*> GateList;
 
 public:
 	CirMgr();
@@ -19,7 +21,9 @@ public:
 	bool read(string);
 	void print();
 
-	GateMap gateMap;
+	GateMap _gateMap;
+	GateList _piList;
+	GateList _poList;
 };
 
 string wireName(string);
