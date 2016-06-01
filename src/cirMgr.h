@@ -5,25 +5,27 @@
 #include<fstream>
 #include<vector>
 #include<string>
-#include<map>
-#include"Gate.h"
+//#include<map>
+#include"cirDef.h"
+//#include"Gate.h"
+#include"Path.h"
 using namespace std;
 
 class CirMgr
 {
-typedef map<string, Gate*> GateMap;
-typedef pair<string, Gate*> GatePair;
-typedef vector<Gate*> GateList;
-
 public:
 	CirMgr();
 	~CirMgr();
 	bool read(string);
 	void print();
-
+	void dfs_path();
 	GateMap _gateMap;
+	PathMap _pathMap;
 	GateList _piList;
 	GateList _poList;
+	GateList _dfsList;
+	
+	Gate* build_dfs_and_path(Gate*,GateList&,vector<string>&);
 };
 
 string wireName(string);

@@ -96,7 +96,7 @@ bool CirMgr::read(string file){
 	return true;
 }
 void CirMgr::print(){
-	cout<<"gateMap:"<<endl;
+	/*cout<<"gateMap:"<<endl;
 	for(GateMap::iterator i=_gateMap.begin();i!=_gateMap.end();++i){
 		Gate* g=(*i).second;
 		cout<<(*i).first<<" "<<g->type<<endl;
@@ -105,7 +105,62 @@ void CirMgr::print(){
 		for(int i=0;i<g->Y.size();++i){
 			cout<<"Y: "<<g->Y[i]->name<<endl;
 		}
+	}*/
+	cout<<"piList:"<<endl;
+	for(size_t i=0;i<_piList.size();++i){
+		Gate* g=_piList[i];
+		cout<<g->name<<" "<<g->type<<endl;
 	}
+	cout<<"poList:"<<endl;
+	for(size_t i=0;i<_poList.size();++i){
+		Gate* g=_poList[i];
+		cout<<g->name<<" "<<g->type<<endl;
+	}
+	cout<<"dfsList:"<<endl;
+	for(size_t i=0;i<_dfsList.size();++i){
+		Gate* g=_dfsList[i];
+		cout<<g->name<<" "<<g->type<<endl;
+	}
+	cout<<"pathMap:"<<endl;
+	for(PathMap::iterator i=_pathMap.begin();i!=_pathMap.end();++i){
+		cout<<(*i).first<<endl;
+	}
+	
+}
+
+void CirMgr::dfs_path(){
+	for(size_t i=0;i<_poList.size();++i){
+		GateList tmpPath;
+		vector<string> tmpPort;
+		build_dfs_and_path(_poList[i],tmpPath,tmpPort);
+	}
+}
+Gate* CirMgr::build_dfs_and_path(Gate* g, GateList& tmppath, vector<string>& port){
+	tmppath.insert(tmppath.begin(),g);
+	if(g->A){
+		port.insert(port.begin(),"A");
+		build_dfs_and_path(g->A, tmppath, port);
+	}
+	if(g->B){
+		port.insert(port.begin(),"B");
+		build_dfs_and_path(g->B, tmppath, port);
+	}
+	if(g->type=="in") {
+		port.insert(port.begin(),"in");
+		Path* rpath=new Path(tmppath,port,"r");
+		_pathMap.insert(PathPair(rpath->pathKey, rpath));
+		Path* fpath=new Path(tmppath,port,"f");
+		_pathMap.insert(PathPair(fpath->pathKey, fpath));
+	}
+	if(g->flag==false){
+		g->flag=true;
+		_dfsList.push_back(g);
+	}
+	tmppath.erase(tmppath.begin());
+	port.erase(port.begin());
+	return g;
+
+return 0;
 }
 	 
 string wireName(string str){

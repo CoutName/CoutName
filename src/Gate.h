@@ -3,14 +3,16 @@
 #include<iostream>
 #include<string>
 #include<vector>
+#include<map>
 using namespace std;
 class Gate
 {
 public:
-    Gate(string, string);
+    Gate(string n, string t);
 	~Gate();
     string name;
 	string type;
+	bool flag;
 
 	vector<Gate*> Y;
 	vector<string> port;
