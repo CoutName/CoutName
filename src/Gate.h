@@ -18,6 +18,23 @@ public:
 	vector<string> port;
 	Gate* A;
 	Gate* B;
+	
+	//for simulate
+	int valueA;
+	int valueB;
+	int valueY;
+	int timeA;
+	int timeB;
+	int timeY;
+	bool trueA;
+	bool trueB;
+
+	//for bst
+	int inValue;
+	int	inTime;
+	Gate* inGate;
+	string inPort;
+	bool searched;
 };
 
 #endif

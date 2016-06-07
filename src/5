@@ -1,0 +1,9 @@
+module
+input a;
+output x;
+wire n1;
+
+NOT1 U1 ( .A(a), .Y(n1) );
+NAND2 U2 ( .A(n1), .B(a), .Y(x) );
+
+endmodule
