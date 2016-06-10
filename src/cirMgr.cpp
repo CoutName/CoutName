@@ -163,44 +163,17 @@ void CirMgr::path(){
 	}
 	cout<<"Total: "<<_pathMap.size()<<" paths"<<endl;
 }
-/*
-void CirMgr::falsepath(){
-	for(size_t i=0;i<_piList.size();++i){
-		Gate* g=_piList[i];
-		cout<<g->name<<"(rise)"<<endl;
-		g->inValue=0;//rise
-		find_falsepath(g);
-		cout<<g->name<<"(fall)"<<endl;
-		g->inValue=1;//fall
-		find_falsepath(g);
-	}
-	
-	cout<<"truepathMap:==================================="<<endl;
-	for(PathMap::iterator i=_pathMap.begin();i!=_pathMap.end();++i){
-		cout<<(*i).first<<endl;
-	}
-	cout<<"Total: "<<_pathMap.size()<<" true paths"<<endl;
-	
-}
-*/
-void CirMgr::simulate(){
+void CirMgr::brute(){
 	vector<int> simValue(_piList.size()+1,0);
 	while(simValue.back()!=1){
 		for(size_t i=0;i<_piList.size();++i){ //assign input value
 			_piList[i]->valueY=simValue[i];
 			_piList[i]->timeY=0;
-		//	cout<<_piList[i]->name<<" "<<_piList[i]->valueY<<endl;
+			//cout<<_piList[i]->name<<" "<<_piList[i]->valueY<<endl;
 		}
-		for(size_t i=0;i<_dfsList.size();++i){ //simulate
-			Gate* g=_dfsList[i];
-			g->trueA=g->trueB=false;
-			if(g->type=="NOT1") simNOT1(g);
-			else if(g->type=="NAND2") simNAND2(g);
-			else if(g->type=="NOR2") simNOR2(g);
-			else simPO(g);
-			//cout<<g->name<<"; simValueY: "<<g->valueY<<endl;
-		}
+		simulate();
 		if(_pathMap.empty()) break;
+		vector<string> tobedeleted;
 		for(PathMap::iterator it=_pathMap.begin();it!=_pathMap.end();++it){//print and delete
 			Path* path=(*it).second;
 			GateList gs=path->gates;
@@ -217,9 +190,12 @@ void CirMgr::simulate(){
 			}
 			if(istruepath){
 				cout<<"truepath: "<<path->pathKey<<endl;
+				tobedeleted.push_back(path->pathKey);
 				//path->print();
-				_pathMap.erase(it);
 			}
+		}
+		for(size_t i=0;i<tobedeleted.size();++i){
+			_pathMap.erase(tobedeleted[i]);
 		}
 		int count=0;
 		while(true){
@@ -233,7 +209,19 @@ void CirMgr::simulate(){
 			}
 		}
 	}
+}
 
+void CirMgr::simulate(){
+	for(size_t i=0;i<_dfsList.size();++i){ 
+		Gate* g=_dfsList[i];
+		g->trueA=false;
+		g->trueB=false;
+		if(g->type=="NOT1") simNOT1(g);
+		else if(g->type=="NAND2") simNAND2(g);
+		else if(g->type=="NOR2") simNOR2(g);
+		else simPO(g);
+		//cout<<g->name<<"; simValueY: "<<g->valueY<<endl;
+	}
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -276,122 +264,7 @@ Gate* CirMgr::find_path(Gate* g, GateList& tmppath, vector<string>& port, int sl
 	return g;
 
 }
-/* //bfs find falsepath 
-void CirMgr::find_falsepath(Gate* s){
-	s->inTime=-1;
-	s->searched=true;
-	GateList allsearched;
-	GateList Q;
-	GateList tmpfalse;
-	GateList falsegate;
-	allsearched.push_back(s);
-	Q.push_back(s);
 
-	while(!Q.empty()){
-		Gate* u=Q.front();
-		if(u->inTime>TIME_C){
-			Q.erase(Q.begin());
-			continue;
-		}
-		if((u->inValue==0 && u->type=="NOR2") || 
-			(u->inValue==1 &&u->type=="NAND2") || 
-			(u->inValue!=0 && u->inValue!=1)){
-			u->inValue=5;
-		}
-		else u->flag=true;
-		for(size_t i=0;i<u->Y.size();++i){
-			Gate* v=u->Y[i];
-			v->inGate=u;
-			v->inPort=u->port[i];
-			if(v->searched){
-				tmpfalse.push_back(v);
-				continue;
-			}
-			v->inValue=abs(u->inValue-1);
-			v->inGate=u;
-			v->inPort=u->port[i];
-			v->searched=true;
-			v->inTime=u->inTime+1;
-			Q.push_back(v);
-			allsearched.push_back(v);
-		}
-		Q.erase(Q.begin());
-
-	}
-	for(size_t i=0;i<tmpfalse.size();++i){
-		Gate* g=tmpfalse[i];
-		int value=abs(g->inGate->inValue-1);
-		if(!g->flag){
-			if(isControl(g,value)){
-				changeInPort(g);
-				falsegate.push_back(g);					
-			}
-		}
-		else{
-			if(isControl(g,value) && (g->inGate->inTime+1 == g->inTime))
-				continue;
-			falsegate.push_back(g);
-		}
-	}
-	
-	cout<<"false gate: "<<endl;
-	for(size_t i=0;i<falsegate.size();++i){
-		cout<< falsegate[i]->name<<falsegate[i]->inPort<<endl;
-		delete_falsepath(falsegate[i]);
-	}
-	for(size_t i=0;i<allsearched.size();++i){
-		allsearched[i]->flag=false;	
-		allsearched[i]->searched=false;
-	}
-}
-
-void CirMgr::delete_falsepath(Gate* g){
-	string pathName=pathToInput(g);
-	pathToOutput(g,pathName);
-
-}
-
-string CirMgr::pathToInput(Gate* g){
-	string str="";
-	while(g->inGate){
-		str=g->name+g->inPort+str;
-		g=g->inGate;
-	}
-	str=g->name+str;
-	if(g->inValue==0) str="r"+str;
-	else str="f"+str;
-	return str;
-}
-
-Gate* CirMgr::pathToOutput(Gate* g, string str){
-	for(size_t i=0;i<g->Y.size();++i){
-		Gate* y=g->Y[i];
-		str=str+y->name;
-		if(y->type=="out"){
-		//	cout<<"delete: "<<str<<endl;
-			_pathMap.erase(str);
-			return y;
-		}
-		str=str+g->port[i];
-		pathToOutput(y, str);
-	}
-}
-
-bool isControl(Gate* g, int v){
-	return ((v==0 && g->type=="NAND2") || (v==1 && g->type=="NOR2"));
-}
-
-void changeInPort(Gate* g){
-	if(g->inPort=="A"){
-		g->inPort="B";
-		g->inGate=g->B;
-	}
-	else{
-		g->inPort="A";
-		g->inGate=g->A;
-	}
-}
-*/
 string wireName(string str){
 	string sstr;
 	if(str.find(",")!=string::npos){

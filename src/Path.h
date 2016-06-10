@@ -15,7 +15,6 @@ public:
 	vector<string> ports;
 	string inType;
 	string pathKey;
-	int slack;
 };
 
 

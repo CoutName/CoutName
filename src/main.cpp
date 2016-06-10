@@ -28,7 +28,7 @@ int main(){
 	
 	string str;
 	while(true){
-		cout<<"p(print)/q(quit)/r(read)/d(dfs)/pa(path)/f(findfalse)/s(simulate)... : ";
+		cout<<"p(print)/q(quit)/r(read)/d(dfs)/pa(path)/f(findfalse)/b(bruteforce)... : ";
 		cin>>str;
 		if(str=="p") cirMgr->print();
 		if(str=="q") {fout.close();break;}
@@ -55,11 +55,8 @@ int main(){
 		if(str=="pa"){
 			cirMgr->path();
 		}
-		/*if(str=="f"){
-			cirMgr->falsepath();
-		}*/
-		if(str=="s"){
-			cirMgr->simulate();
+		if(str=="b"){
+			cirMgr->brute();
 		}
 	}
 	delete cirMgr;
