@@ -1,6 +1,7 @@
 #ifndef PATH_H
 #define PATH_H
 #include<iostream>
+#include<fstream>
 #include<vector>
 #include<string>
 #include"Gate.h"
@@ -15,6 +16,8 @@ public:
 	vector<string> ports;
 	string inType;
 	string pathKey;
+
+	void print();
 };
 
 

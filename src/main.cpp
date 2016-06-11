@@ -55,6 +55,9 @@ int main(){
 		if(str=="pa"){
 			cirMgr->path();
 		}
+		if(str=="f"){
+			cirMgr->falsepath();
+		}
 		if(str=="b"){
 			cirMgr->brute();
 		}

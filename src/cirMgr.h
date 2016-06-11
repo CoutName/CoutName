@@ -19,6 +19,7 @@ public:
 	void print();
 	void dfs();
 	void path();
+	void falsepath();
 	void brute();
 	void simulate();
 	
@@ -30,9 +31,16 @@ public:
 
 	Gate* build_dfs(Gate*);
 	Gate* find_path(Gate*, GateList&, vector<string>&, int);
+	void set_time();
+	void find_falsepath(Gate*);
+	void delete_falsepath(Gate*);
+	string pathToInput(Gate*);
+	Gate* pathToOutput(Gate*, string);
 };
 
 string wireName(string);
+bool isControl(Gate*, int);
+void changeInPort(Gate*);
 void simNOT1(Gate*);
 void simNAND2(Gate*);
 void simNOR2(Gate*);

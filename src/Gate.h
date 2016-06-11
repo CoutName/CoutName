@@ -28,6 +28,13 @@ public:
 	int timeY;
 	bool trueA;
 	bool trueB;
+
+	//for bst
+	int inValue;
+	int inTime;
+	Gate* inGate;
+	string inPort;
+	bool searched;
 };
 
 #endif
