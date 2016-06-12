@@ -138,7 +138,10 @@ void CirMgr::print(){
 
 void CirMgr::dfs(){
 	for(size_t i=0;i<_poList.size();++i){
-		build_dfs(_poList[i]);
+		Circuit tmpckt;
+		tmpckt.PO = _poList[i];
+		build_dfs(_poList[i],tmpckt);
+		_circuits.push_back(tmpckt);
 	}
 	for(size_t i=0;i<_dfsList.size();++i){
 		_dfsList[i]->flag=false;
@@ -154,12 +157,10 @@ void CirMgr::dfs(){
 void CirMgr::path(){
 	
 	for(size_t i=0;i<_poList.size();++i){
-		Circuit	tmpckt;
-		tmpckt.PO = _poList[i];
+		//Circuit	tmpckt;
 		GateList tmpPath;
 		vector<string> tmpPort;
-		find_path(_poList[i],tmpPath,tmpPort,TIME_C+1,tmpckt);
-		_circuits.push_back(tmpckt);
+		find_path(_poList[i],tmpPath,tmpPort,TIME_C+1,_circuits[i]);
 	}
 	cout<<"pathMap:======================================"<<endl;
 	for(PathMap::iterator i=_pathMap.begin();i!=_pathMap.end();++i){
@@ -250,19 +251,219 @@ void CirMgr::output_test(){
 	for(int  i=0; i<_circuits.size(); i++){
 		for(int j=0; j<_circuits[i].size();j++){
 			Set_Test(_circuits[i][j],0);
-			Tmp_In();
-			Simulate();
-			Reset();
+			Simulate(_circuits[i],_circuits[i][j]);
+			Reset(_circuits[i]);
 			Set_Test(_circuits[i][j],1);
-			Tmp_In();
-			Simulate();
-			Reset();
+			Simulate(_circuits[i],_circuits[i][j]);
+			Reset(_circuits[i]);
 		}
 		
 	}	
 
 }
+void Reset(Circuit& ckt){
+	for(size_t i=0; i<ckt.DFS_list.size();i++){
+		ckt.DFS_list[i]->Out_test = 10;
+	}
+	for(size_t i=0; i<ckt.PI_list.size();i++){
+		ckt.PI_list[i]->Out_test =10;
+	}
+}
+void Set_Test(Path* t_path,int set_out){
+	int num = 0;
+	Gate*	now_gate = t_path -> gates[num];
 
+	if(now_gate->type != "out")	cout<<"ERROR!";
+	else{
+		now_gate -> Out_test = set_out;
+		Trace_Out_test(now_gate,t_path,num);
+	}
+}
+
+void Trace_Out_test(Gate* g, Path* p,int num){
+  	if(g->type == "in")
+    	break;
+    else if(g->type == "NAND2"){
+      	if(g->Out_test == 1)
+          	p->gates[num+1] ->Out_test = 0;
+   		else if (g -> Out_test == 0){
+       		g->A_pre->Out_test = 1;
+       		g->B_pre->Out_test = 1;		
+       		if( p->gates[num+1] == g->A_pre)
+				maybe_in(g -> B_pre);
+			else	maybe_in(g -> A_pre);
+   		}
+	   	else cout<<"ERROR!!"<<endl;
+		num++;
+       	Trace_Out_test(p -> gates[num],p,num);
+    }
+    else if (g->type == "NOR2"){
+   		if(g->Out_test == 1){
+       		g->A_pre->Out_test = 0;
+       		g->B_pre->Out_test = 0;
+       		if( p->gates[num+1] == g->A_pre)
+				maybe_in(g -> B_pre);
+			else	maybe_in(g -> A_pre);
+   		}
+   		else if(g->Out_test==0)
+       		p->gates[num+1]->Out_test = 1;
+	   	else cout<<"ERROR!!"<<endl;
+        num++;
+        Trace_Out_test(p -> gates[num],p,num);
+   	}
+    else if (g->type == "NOT1"){
+   		if(g->Out_test == 1)
+			p->gates[num+1]->Out_test = 0;
+    	else if(g->Out_test == 0)
+			p->gates[num+1]->Out_test = 1;
+	   	else cout<<"ERROR!!"<<endl;
+		num++;
+        Trace_Out_test(p -> gates[num],p,num);
+	}
+	else if(g->type == "out"){ 													//if (type == "OUT")
+    	p->gates[num+1]->Out_test = g->Out_test;
+		num++;
+        Trace_Out_test(p -> gates[num],p,num);
+    }
+}
+
+void maybe_in(Gate* g){
+	if(g->type == "in") return;
+	else if(g->type == "NAND2"){
+		if(g->Out_test == 0){
+			g->A_pre->Out_test = 1;
+			maybe_in(g->A_pre);
+			g->B_pre->Out_test = 1;
+			maybe_in(g->B_pre);
+		}
+		else return;
+	}
+	else if(g->type == "NOR2"){
+		if(g->Out_test == 1){
+			g->A_pre->Out_test = 0;
+			maybe_in(g->A_pre);
+			g->B_pre->Out_test = 0;
+			maybe_in(g->B_pre);
+		}
+		else return;
+	}
+	else if(g->type == "NOT1"){
+		g->A_pre->Out_test == ~g->Out_test;
+		maybe_in(g->A_pre);
+	}
+}
+
+void CirMgr::Simulate(Circuit& ckt, Path* t_path){
+	int count=0;
+	vector<Gate*> unsurePI;
+	for(size_t i=0; i<ckt.PI_list.size();i++)
+		ckt.PI_list[i]->valueY =  ckt.PI_list[i]->Out_test;
+		if(ckt.PI_list[i]->valueY == 10){
+			count++;
+			unsurePI.push_back(ckt.PI_list[i]);
+		}
+	vector<int> cal_in(count+1,0);
+	while(cal_in.back()!=1){
+		for(size_t i=0; i<unsurePI.size();i++){
+			unsurePI[i]->valueY = cal_in[i];
+		}
+		
+		for(size_t i=0;i<ckt.PI_list.size();++i){ //assign input value
+			ckt.PI_list[i]->timeY=0;
+		//	cout<<_piList[i]->name<<" "<<_piList[i]->valueY<<endl;
+		}
+		for(size_t i=0;i<ckt.DFS_list.size();++i){ //simulate
+			Gate* g = ckt.DFS_list[i];
+			g->trueA=g->trueB=false;
+			if(g->type=="NOT1") simNOT1(g);
+			else if(g->type=="NAND2") simNAND2(g);
+			else if(g->type=="NOR2") simNOR2(g);
+			else simPO(g);
+			//cout<<g->name<<"; simValueY: "<<g->valueY<<endl;
+		}
+		
+		if(!(delay_conf(t_path) || (ckt.PO->valueY != ckt.PO->Out_test))){
+			string in_pattern = "";
+			for(size_t i=0; i<_piList.size();i++){
+				if(_piList[i]->valueY == 2)
+					in_pattern.append("X");
+				else{
+					stringstream	ss;
+					ss << 	_piList[i]->valueY;
+					in_pattern.append(ss.str());
+				}
+			}
+			it = in_ans.find(in_pattern);
+			if(it != in_ans.end()){
+				in_ans[in_pattern].push_back(t_path);
+			}
+			else{
+				vector<Path*> tmp;
+				tmp.push_back(t_path);
+				in_ans[in_pattern]= tmp;
+			}
+			cout<<"We success!!!"<<endl;
+		}
+
+		int digit=0;
+		while(true){
+			if(cal_in[digit]==0){
+				cal_in[digit]=1;
+				break;
+			}
+			else{
+				cal_in[digit]=0;
+				++digit;
+			}
+		}
+	}
+
+}
+bool delay_conf(Path* p){
+	for(size_t i=0;i<p->gates.size()-1;i++){
+		bool done=false,dzero=false;
+		if(p->gates[i]->valueA == 1 && p->gates[i]->valueB ==1) done = true;
+		if(p->gates[i]->valueA == 0 && p->gates[i]->valueB ==0) dzero = true;
+		if(p->gates[i]->type == "NOR2"){
+			if(p->gates[i]->A->name == p->gates[i+1]->name) {
+				if(done) {
+					if(p->gates[i]->timeA > p->gates[i]->timeB) return true;
+				}
+				else if(dzero) {
+					if(p->gates[i]->timeA < p->gates[i]->timeB) return true;
+				}
+			}
+			else if(p->gates[i]->B->name == p->gates[i+1]->name) {
+				if(done) {
+					if(p->gates[i]->timeB > p->gates[i]->timeA) return true;
+				}
+				else if(dzero) {
+					if(p->gates[i]->timeB < p->gates[i]->timeA) return true;
+				}
+
+			}
+		}
+		else if(p->gates[i]->type == "NAND2"){	
+			if(p->gates[i]->A->name == p->gates[i+1]->name) {
+				if(done) {
+					if(p->gates[i]->timeA < p->gates[i]->timeB) return true;
+				}
+				else if(dzero) {
+					if(p->gates[i]->timeA > p->gates[i]->timeB) return true;
+				}
+			}
+			else if(p->gates[i]->B->name == p->gates[i+1]->name) {
+				if(done) {
+					if(p->gates[i]->timeB < p->gates[i]->timeA) return true;
+				}
+				else if(dzero) {
+					if(p->gates[i]->timeB > p->gates[i]->timeA) return true;
+				}
+		}
+		else continue;
+	}
+	return false;
+}
 void CirMgr::simulate(){
 	for(size_t i=0;i<_dfsList.size();++i){ 
 		Gate* g=_dfsList[i];
@@ -288,13 +489,16 @@ string wireName(string str){
 	return sstr;
 }
 
-Gate* CirMgr::build_dfs(Gate* g){
+Gate* CirMgr::build_dfs(Gate* g, Circuit& tmpckt){
 	if(g->flag) return g;
 	if(g->A) build_dfs(g->A);
 	if(g->B) build_dfs(g->B);
 	if(g->flag==false){
 		g->flag=true;
-		if(g->type!="in") _dfsList.push_back(g);
+		if(g->type!="in"){
+			_dfsList.push_back(g);
+			tmpckt.DFS_list.push_back(g);
+		}
 	}
 	return g;
 }
