@@ -249,12 +249,12 @@ void CirMgr::brute(){
 }
 void CirMgr::output_test(){
 	for(int  i=0; i<_circuits.size(); i++){
-		for(int j=0; j<_circuits[i].size();j++){
-			Set_Test(_circuits[i][j],0);
-			Simulate(_circuits[i],_circuits[i][j]);
+		for(int j=0; j<_circuits[i].path_list.size();j++){
+			Set_Test(_circuits[i].path_list[j],0);
+			Simulate(_circuits[i],_circuits[i].path_list[j]);
 			Reset(_circuits[i]);
-			Set_Test(_circuits[i][j],1);
-			Simulate(_circuits[i],_circuits[i][j]);
+			Set_Test(_circuits[i].path_list[j],1);
+			Simulate(_circuits[i],_circuits[i].path_list[j]);
 			Reset(_circuits[i]);
 		}
 		
@@ -282,16 +282,16 @@ void Set_Test(Path* t_path,int set_out){
 
 void Trace_Out_test(Gate* g, Path* p,int num){
   	if(g->type == "in")
-    	break;
+    	return;
     else if(g->type == "NAND2"){
       	if(g->Out_test == 1)
           	p->gates[num+1] ->Out_test = 0;
    		else if (g -> Out_test == 0){
-       		g->A_pre->Out_test = 1;
-       		g->B_pre->Out_test = 1;		
-       		if( p->gates[num+1] == g->A_pre)
-				maybe_in(g -> B_pre);
-			else	maybe_in(g -> A_pre);
+       		g->A->Out_test = 1;
+       		g->B->Out_test = 1;		
+       		if( p->gates[num+1] == g->A)
+				maybe_in(g -> B);
+			else	maybe_in(g -> A);
    		}
 	   	else cout<<"ERROR!!"<<endl;
 		num++;
@@ -299,11 +299,11 @@ void Trace_Out_test(Gate* g, Path* p,int num){
     }
     else if (g->type == "NOR2"){
    		if(g->Out_test == 1){
-       		g->A_pre->Out_test = 0;
-       		g->B_pre->Out_test = 0;
-       		if( p->gates[num+1] == g->A_pre)
-				maybe_in(g -> B_pre);
-			else	maybe_in(g -> A_pre);
+       		g->A->Out_test = 0;
+       		g->B->Out_test = 0;
+       		if( p->gates[num+1] == g->A)
+				maybe_in(g -> B);
+			else	maybe_in(g -> A);
    		}
    		else if(g->Out_test==0)
        		p->gates[num+1]->Out_test = 1;
@@ -331,37 +331,38 @@ void maybe_in(Gate* g){
 	if(g->type == "in") return;
 	else if(g->type == "NAND2"){
 		if(g->Out_test == 0){
-			g->A_pre->Out_test = 1;
-			maybe_in(g->A_pre);
-			g->B_pre->Out_test = 1;
-			maybe_in(g->B_pre);
+			g->A->Out_test = 1;
+			maybe_in(g->A);
+			g->B->Out_test = 1;
+			maybe_in(g->B);
 		}
 		else return;
 	}
 	else if(g->type == "NOR2"){
 		if(g->Out_test == 1){
-			g->A_pre->Out_test = 0;
-			maybe_in(g->A_pre);
-			g->B_pre->Out_test = 0;
-			maybe_in(g->B_pre);
+			g->A->Out_test = 0;
+			maybe_in(g->A);
+			g->B->Out_test = 0;
+			maybe_in(g->B);
 		}
 		else return;
 	}
 	else if(g->type == "NOT1"){
-		g->A_pre->Out_test == ~g->Out_test;
-		maybe_in(g->A_pre);
+		g->A->Out_test == ~g->Out_test;
+		maybe_in(g->A);
 	}
 }
 
 void CirMgr::Simulate(Circuit& ckt, Path* t_path){
 	int count=0;
 	vector<Gate*> unsurePI;
-	for(size_t i=0; i<ckt.PI_list.size();i++)
+	for(size_t i=0; i<ckt.PI_list.size();i++){
 		ckt.PI_list[i]->valueY =  ckt.PI_list[i]->Out_test;
 		if(ckt.PI_list[i]->valueY == 10){
 			count++;
 			unsurePI.push_back(ckt.PI_list[i]);
 		}
+	}
 	vector<int> cal_in(count+1,0);
 	while(cal_in.back()!=1){
 		for(size_t i=0; i<unsurePI.size();i++){
@@ -395,12 +396,12 @@ void CirMgr::Simulate(Circuit& ckt, Path* t_path){
 			}
 			it = in_ans.find(in_pattern);
 			if(it != in_ans.end()){
-				in_ans[in_pattern].push_back(t_path);
+				in_ans[in_pattern].push_back(t_path->pathKey);
 			}
 			else{
-				vector<Path*> tmp;
-				tmp.push_back(t_path);
-				in_ans[in_pattern]= tmp;
+				vector<string> tmp;
+				tmp.push_back(t_path->pathKey);
+				in_ans.insert(pair<string, vector<string> >(in_pattern, tmp));
 			}
 			cout<<"We success!!!"<<endl;
 		}
@@ -459,8 +460,9 @@ bool delay_conf(Path* p){
 				else if(dzero) {
 					if(p->gates[i]->timeB > p->gates[i]->timeA) return true;
 				}
+			}
+			else continue;
 		}
-		else continue;
 	}
 	return false;
 }
@@ -491,8 +493,8 @@ string wireName(string str){
 
 Gate* CirMgr::build_dfs(Gate* g, Circuit& tmpckt){
 	if(g->flag) return g;
-	if(g->A) build_dfs(g->A);
-	if(g->B) build_dfs(g->B);
+	if(g->A) build_dfs(g->A, tmpckt);
+	if(g->B) build_dfs(g->B, tmpckt);
 	if(g->flag==false){
 		g->flag=true;
 		if(g->type!="in"){
@@ -509,11 +511,11 @@ Gate* CirMgr::find_path(Gate* g, GateList& tmppath, vector<string>& port, int sl
 	tmppath.push_back(g);
 	if(g->A){
 		port.push_back("A");
-		find_path(g->A, tmppath, port, slack-1);
+		find_path(g->A, tmppath, port, slack-1, tmpckt);
 	}
 	if(g->B){
 		port.push_back("B");
-		find_path(g->B, tmppath, port, slack-1);
+		find_path(g->B, tmppath, port, slack-1, tmpckt);
 	}
 	if(g->type=="in") {
 		port.push_back("in");

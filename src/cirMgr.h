@@ -40,7 +40,7 @@ public:
 
 	////////////////////
 	Gate* build_dfs(Gate*,Circuit&);
-	Gate* find_path(Gate*, GateList&, vector<string>&, int, Ckt&);
+	Gate* find_path(Gate*, GateList&, vector<string>&, int, Circuit&);
 	void set_time();
 	void find_falsepath(Gate*);
 	void delete_falsepath(Gate*);
