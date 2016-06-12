@@ -1,6 +1,7 @@
 #include"cirMgr.h"
 #include<cstdlib>
 #include<time.h>
+#include<algorithm>
 using namespace std;
 extern int TIME_C;
 extern int SLACK_C;
@@ -256,10 +257,21 @@ void CirMgr::output_test(){
 			Set_Test(_circuits[i].path_list[j],1);
 			Simulate(_circuits[i],_circuits[i].path_list[j]);
 			Reset(_circuits[i]);
-		}
-		
+		}		
 	}	
-
+	vector<string>	overlap;
+	vector<string>::iterator ier;
+	for(it = in_ans.begin(); it!=in_ans.end();it++){
+		//cout<<it->first<<":"<<endl;
+		for(size_t i=0;i<it->second.size();i++){
+			ier = find(overlap.begin(),overlap.end(),it->second[i]);
+			if(ier == overlap.end()){
+				cout<<it->second[i]<<endl;
+				overlap.push_back(it->second[i]);
+			}
+		}
+	}
+	cout<<"Total true path:"<<overlap.size()<<endl;
 }
 void Reset(Circuit& ckt){
 	for(size_t i=0; i<ckt.DFS_list.size();i++){
@@ -403,7 +415,7 @@ void CirMgr::Simulate(Circuit& ckt, Path* t_path){
 				tmp.push_back(t_path->pathKey);
 				in_ans.insert(pair<string, vector<string> >(in_pattern, tmp));
 			}
-			cout<<"We success!!!"<<endl;
+	//		cout<<"We success!!!"<<endl;
 		}
 
 		int digit=0;
@@ -526,6 +538,8 @@ Gate* CirMgr::find_path(Gate* g, GateList& tmppath, vector<string>& port, int sl
 			Path* fpath=new Path(tmppath,port,"f");
 			_pathMap.insert(PathPair(fpath->pathKey, fpath));
 			tmpckt.path_list.push_back(fpath);
+			//Path* tpath=new Path(tmppath,port,"");
+			//tmpckt.path_list.push_back(tpath);
 		}
 		bool alreadyin = false;
 		for(int i=0;i<tmpckt.PI_list.size();i++){
