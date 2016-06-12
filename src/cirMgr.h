@@ -22,15 +22,18 @@ public:
 	void falsepath();
 	void brute();
 	void simulate();
+	void output_test();
 	
 	GateMap _gateMap;
 	PathMap _pathMap;
 	GateList _piList;
 	GateList _poList;
 	GateList _dfsList;
+	vector<Circuit>	_circuits;
+		
 
 	Gate* build_dfs(Gate*);
-	Gate* find_path(Gate*, GateList&, vector<string>&, int);
+	Gate* find_path(Gate*, GateList&, vector<string>&, int, Ckt&);
 	void set_time();
 	void find_falsepath(Gate*);
 	void delete_falsepath(Gate*);

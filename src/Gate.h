@@ -35,6 +35,10 @@ public:
 	Gate* inGate;
 	string inPort;
 	bool searched;
+
+	//for new hope ->  die
+	int Out_test = ;
+
 };
 
 #endif

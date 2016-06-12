@@ -11,5 +11,6 @@ typedef map<string, Gate*> GateMap;
 typedef pair<string, Gate*> GatePair;
 typedef map<string, Path*> PathMap;
 typedef pair<string, Path*> PathPair;
+typedef vector<Path*>	Ckt;
 
 #endif

@@ -152,10 +152,14 @@ void CirMgr::dfs(){
 }
 
 void CirMgr::path(){
+	
 	for(size_t i=0;i<_poList.size();++i){
+		Circuit	tmpckt;
+		tmpckt.PO = _poList[i];
 		GateList tmpPath;
 		vector<string> tmpPort;
-		find_path(_poList[i],tmpPath,tmpPort,TIME_C+1);
+		find_path(_poList[i],tmpPath,tmpPort,TIME_C+1,tmpckt);
+		_circuits.push_back(tmpckt);
 	}
 	cout<<"pathMap:======================================"<<endl;
 	for(PathMap::iterator i=_pathMap.begin();i!=_pathMap.end();++i){
@@ -242,6 +246,22 @@ void CirMgr::brute(){
 		}
 	}
 }
+void CirMgr::output_test(){
+	for(int  i=0; i<_circuits.size(); i++){
+		for(int j=0; j<_circuits[i].size();j++){
+			Set_Test(_circuits[i][j],0);
+			Tmp_In();
+			Simulate();
+			Reset();
+			Set_Test(_circuits[i][j],1);
+			Tmp_In();
+			Simulate();
+			Reset();
+		}
+		
+	}	
+
+}
 
 void CirMgr::simulate(){
 	for(size_t i=0;i<_dfsList.size();++i){ 
@@ -279,7 +299,7 @@ Gate* CirMgr::build_dfs(Gate* g){
 	return g;
 }
 
-Gate* CirMgr::find_path(Gate* g, GateList& tmppath, vector<string>& port, int slack){
+Gate* CirMgr::find_path(Gate* g, GateList& tmppath, vector<string>& port, int slack, Circuit& tmpckt){
 	if(slack<0) return g;
 	
 	tmppath.push_back(g);
@@ -296,9 +316,19 @@ Gate* CirMgr::find_path(Gate* g, GateList& tmppath, vector<string>& port, int sl
 		if(slack<SLACK_C){
 			Path* rpath=new Path(tmppath,port,"r");
 			_pathMap.insert(PathPair(rpath->pathKey, rpath));
+			tmpckt.path_list.push_back(rpath);
 			Path* fpath=new Path(tmppath,port,"f");
 			_pathMap.insert(PathPair(fpath->pathKey, fpath));
+			tmpckt.path_list.push_back(fpath);
 		}
+		bool alreadyin = false;
+		for(int i=0;i<tmpckt.PI_list.size();i++){
+			if(g->name == tmpckt.PI_list[i]->name){
+				alreadyin = true;
+				break;
+			}
+		}
+		if(!alreadyin) tmpckt.PI_list.push_back(g);
 		port.pop_back();
 	}
 	tmppath.pop_back();

@@ -61,6 +61,9 @@ int main(){
 		if(str=="b"){
 			cirMgr->brute();
 		}
+		if(str=="o"){
+			cirMgr->output_test();
+		}
 	}
 	delete cirMgr;
 	return 0;
