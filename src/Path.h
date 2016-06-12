@@ -24,7 +24,7 @@ struct Circuit{
 	vector<Gate*>	PI_list;
 	vector<Path*>	path_list;
 	Gate*	PO;
-
+	vector<Gate*>	DFS_list;
 }
 
 

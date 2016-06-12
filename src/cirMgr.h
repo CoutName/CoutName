@@ -1,6 +1,7 @@
 #ifndef CIR_MGR_H
 #define CIR_MGR_H
 
+#include<sstream>
 #include<iostream>
 #include<fstream>
 #include<vector>
@@ -29,10 +30,16 @@ public:
 	GateList _piList;
 	GateList _poList;
 	GateList _dfsList;
-	vector<Circuit>	_circuits;
-		
+	
 
-	Gate* build_dfs(Gate*);
+	////////////////////
+	vector<Circuit>	_circuits;
+	map< string,vector<string> >	in_ans;
+	map< string,vector<string> >::iterator	it;
+	void Simulate(Circuit& , Path*);
+
+	////////////////////
+	Gate* build_dfs(Gate*,Circuit&);
 	Gate* find_path(Gate*, GateList&, vector<string>&, int, Ckt&);
 	void set_time();
 	void find_falsepath(Gate*);
@@ -49,4 +56,9 @@ void simNAND2(Gate*);
 void simNOR2(Gate*);
 void simPO(Gate*);
 
+void Set_Test(Path* ,int );
+void Reset(Circuit& );
+bool delay_conf(Path* );
+void Trace_Out_test(Gate* , Path* ,int );
+void maybe_in(Gate*);
 #endif
