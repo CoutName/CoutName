@@ -262,7 +262,7 @@ void CirMgr::output_test(){
 	vector<string>	overlap;
 	vector<string>::iterator ier;
 	for(it = in_ans.begin(); it!=in_ans.end();it++){
-		//cout<<it->first<<":"<<endl;
+		cout<<it->first<<":"<<endl;
 		for(size_t i=0;i<it->second.size();i++){
 			ier = find(overlap.begin(),overlap.end(),it->second[i]);
 			if(ier == overlap.end()){
@@ -398,7 +398,7 @@ void CirMgr::Simulate(Circuit& ckt, Path* t_path){
 		if(!(delay_conf(t_path) || (ckt.PO->valueY != ckt.PO->Out_test))){
 			string in_pattern = "";
 			for(size_t i=0; i<_piList.size();i++){
-				if(_piList[i]->valueY == 2)
+				if(!_piList[i]->valueY)
 					in_pattern.append("X");
 				else{
 					stringstream	ss;
@@ -406,16 +406,21 @@ void CirMgr::Simulate(Circuit& ckt, Path* t_path){
 					in_pattern.append(ss.str());
 				}
 			}
-			it = in_ans.find(in_pattern);
-			if(it != in_ans.end()){
-				in_ans[in_pattern].push_back(t_path->pathKey);
+			bool goon = true;
+			if(t_path -> inType == "r" && t_path->gates.back()->valueY == 0) goon = false;
+			if(t_path -> inType == "f" && t_path->gates.back()->valueY == 1) goon = false;
+			if(goon){
+				it = in_ans.find(in_pattern);
+				if(it != in_ans.end()){
+					in_ans[in_pattern].push_back(t_path->pathKey);
+				}
+				else{
+					vector<string> tmp;
+					tmp.push_back(t_path->pathKey);
+					in_ans.insert(pair<string, vector<string> >(in_pattern, tmp));
+				}
+		//		cout<<"We success!!!"<<endl;
 			}
-			else{
-				vector<string> tmp;
-				tmp.push_back(t_path->pathKey);
-				in_ans.insert(pair<string, vector<string> >(in_pattern, tmp));
-			}
-	//		cout<<"We success!!!"<<endl;
 		}
 
 		int digit=0;
