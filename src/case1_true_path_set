@@ -1,0 +1,376 @@
+Header  {  A True Path Set  }
+
+Benchmark  {  case1  }
+
+Path  {  1  }
+
+A True Path List
+{
+---------------------------------------------------------------------------
+Pin    type                                Incr        Path delay
+---------------------------------------------------------------------------
+b4 (in)                                     0          0 r
+U1147/A (NAND2)                             0          0 r
+U1147/Y (NAND2)                             1          1 f
+U1148/A (NOT1)                              0          1 f
+U1148/Y (NOT1)                              1          2 r
+U1467/A (NAND2)                             0          2 r
+U1467/Y (NAND2)                             1          3 f
+U1470/A (NAND2)                             0          3 f
+U1470/Y (NAND2)                             1          4 r
+U1540/B (NOR2)                              0          4 r
+U1540/Y (NOR2)                              1          5 f
+U1541/A (NAND2)                             0          5 f
+U1541/Y (NAND2)                             1          6 r
+U1542/B (NAND2)                             0          6 r
+U1542/Y (NAND2)                             1          7 f
+U1550/A (NOT1)                              0          7 f
+U1550/Y (NOT1)                              1          8 r
+U1551/A (NAND2)                             0          8 r
+U1551/Y (NAND2)                             1          9 f
+U1552/B (NAND2)                             0          9 f
+U1552/Y (NAND2)                             1         10 r
+U1615/A (NOT1)                              0         10 r
+U1615/Y (NOT1)                              1         11 f
+U1616/A (NAND2)                             0         11 f
+U1616/Y (NAND2)                             1         12 r
+U1617/A (NAND2)                             0         12 r
+U1617/Y (NAND2)                             1         13 f
+U1631/B (NAND2)                             0         13 f
+U1631/Y (NAND2)                             1         14 r
+U1141/B (NAND2)                             0         14 f
+U1141/Y (NAND2)                             1         15 r
+U1142/A (NOT1)                              0         15 r
+U1142/Y (NOT1)                              1         16 f
+U1678/A (NAND2)                             0         16 f
+U1678/Y (NAND2)                             1         17 r
+U1679/A (NAND2)                             0         17 r
+U1679/Y (NAND2)                             1         18 f
+U1686/B (NAND2)                             0         18 f
+U1686/Y (NAND2)                             1         19 r
+U1688/A (NAND2)                             0         19 r
+U1688/Y (NAND2)                             1         20 f
+U1689/B (NAND2)                             0         20 f
+U1689/Y (NAND2)                             1         21 r
+U1690/B (NAND2)                             0         21 r
+U1690/Y (NAND2)                             1         22 f
+U1149/A (NAND2)                             0         22 f
+U1149/Y (NAND2)                             1         23 r
+U1150/A (NOT1)                              0         23 r
+U1150/Y (NOT1)                              1         24 f
+U1691/A (NAND2)                             0         24 f
+U1691/Y (NAND2)                             1         25 r
+U1694/A (NAND2)                             0         25 r
+U1694/Y (NAND2)                             1         26 f
+U1695/A (NOT1)                              0         26 f
+U1695/Y (NOT1)                              1         27 r
+U2021/A (NAND2)                             0         27 r
+U2021/Y (NAND2)                             1         28 f
+U2022/A (NAND2)                             0         28 f
+U2022/Y (NAND2)                             1         29 r
+U2028/A (NAND2)                             0         29 f
+U2028/Y (NAND2)                             1         30 r
+U2029/B (NAND2)                             0         30 r
+U2029/Y (NAND2)                             1         31 f
+U2035/A (NAND2)                             0         31 f
+U2035/Y (NAND2)                             1         32 r
+U2036/B (NAND2)                             0         32 r
+U2036/Y (NAND2)                             1         33 f
+U2037/B (NAND2)                             0         33 f
+U2037/Y (NAND2)                             1         34 r
+U2038/B (NAND2)                             0         34 r
+U2038/Y (NAND2)                             1         35 f
+U2039/B (NAND2)                             0         35 f
+U2039/Y (NAND2)                             1         36 r
+U2042/A (NAND2)                             0         36 r
+U2042/Y (NAND2)                             1         37 f
+U1103/A (NAND2)                             0         37 f
+U1103/Y (NAND2)                             1         38 r
+U1082/A (NAND2)                             0         38 r
+U1082/Y (NAND2)                             1         39 f
+U1104/A (NOT1)                              0         39 f
+U1104/Y (NOT1)                              1         40 r
+U1084/B (NOR2)                              0         40 r
+U1084/Y (NOR2)                              1         41 f
+U2043/A (NOR2)                              0         41 f
+U2043/Y (NOR2)                              1         42 r
+product17 (out)                             0         42 r
+---------------------------------------------------------------------------
+Data Required Time            45
+Data Arrival Time             42
+---------------------------------------------------------------------------
+Slack                          3
+}
+
+Input Vector
+{
+  a1  =  0
+  a2  =  0
+  a3  =  0
+  a4  =  0
+  a5  =  0
+  a6  =  1
+  a7  =  1
+  a8  =  1
+  a9  =  1
+  a10  =  0
+  b1  =  0
+  b2  =  1
+  b3  =  0
+  b4  =  r
+  b5  =  1
+  b6  =  0
+  b7  =  0
+  b8  =  0
+  b9  =  0
+  b10  =  1
+}
+
+Path  {  2  }
+
+A True Path List
+{
+---------------------------------------------------------------------------
+Pin    type                                Incr        Path delay
+---------------------------------------------------------------------------
+b4 (in)                                     0          0 f
+U1147/A (NAND2)                             0          0 f
+U1147/Y (NAND2)                             1          1 r
+U1148/A (NOT1)                              0          1 r
+U1148/Y (NOT1)                              1          2 f
+U1467/A (NAND2)                             0          2 f
+U1467/Y (NAND2)                             1          3 r
+U1470/A (NAND2)                             0          3 r
+U1470/Y (NAND2)                             1          4 f
+U1540/B (NOR2)                              0          4 f
+U1540/Y (NOR2)                              1          5 r
+U1541/A (NAND2)                             0          5 r
+U1541/Y (NAND2)                             1          6 f
+U1542/B (NAND2)                             0          6 f
+U1542/Y (NAND2)                             1          7 r
+U1550/A (NOT1)                              0          7 r
+U1550/Y (NOT1)                              1          8 f
+U1551/A (NAND2)                             0          8 f
+U1551/Y (NAND2)                             1          9 r
+U1552/B (NAND2)                             0          9 r
+U1552/Y (NAND2)                             1         10 f
+U1615/A (NOT1)                              0         10 f
+U1615/Y (NOT1)                              1         11 r
+U1616/A (NAND2)                             0         11 r
+U1616/Y (NAND2)                             1         12 f
+U1617/A (NAND2)                             0         12 f
+U1617/Y (NAND2)                             1         13 r
+U1631/B (NAND2)                             0         13 r
+U1631/Y (NAND2)                             1         14 f
+U1141/B (NAND2)                             0         14 f
+U1141/Y (NAND2)                             1         15 r
+U1142/A (NOT1)                              0         15 r
+U1142/Y (NOT1)                              1         16 f
+U1678/A (NAND2)                             0         16 f
+U1678/Y (NAND2)                             1         17 r
+U1679/A (NAND2)                             0         17 r
+U1679/Y (NAND2)                             1         18 f
+U1686/B (NAND2)                             0         18 f
+U1686/Y (NAND2)                             1         19 r
+U1688/A (NAND2)                             0         19 r
+U1688/Y (NAND2)                             1         20 f
+U1689/B (NAND2)                             0         20 f
+U1689/Y (NAND2)                             1         21 r
+U1690/B (NAND2)                             0         21 r
+U1690/Y (NAND2)                             1         22 f
+U1149/A (NAND2)                             0         22 f
+U1149/Y (NAND2)                             1         23 r
+U1150/A (NOT1)                              0         23 r
+U1150/Y (NOT1)                              1         24 f
+U1691/A (NAND2)                             0         24 f
+U1691/Y (NAND2)                             1         25 r
+U1694/A (NAND2)                             0         25 r
+U1694/Y (NAND2)                             1         26 f
+U1695/A (NOT1)                              0         26 f
+U1695/Y (NOT1)                              1         27 r
+U2021/A (NAND2)                             0         27 r
+U2021/Y (NAND2)                             1         28 f
+U2022/A (NAND2)                             0         28 f
+U2022/Y (NAND2)                             1         29 r
+U2028/A (NAND2)                             0         29 r
+U2028/Y (NAND2)                             1         30 f
+U2029/B (NAND2)                             0         30 f
+U2029/Y (NAND2)                             1         31 r
+U2035/A (NAND2)                             0         31 r
+U2035/Y (NAND2)                             1         32 f
+U2036/B (NAND2)                             0         32 f
+U2036/Y (NAND2)                             1         33 r
+U2037/B (NAND2)                             0         33 r
+U2037/Y (NAND2)                             1         34 f
+U2038/B (NAND2)                             0         34 f
+U2038/Y (NAND2)                             1         35 r
+U2039/B (NAND2)                             0         35 r
+U2039/Y (NAND2)                             1         36 f
+U2042/A (NAND2)                             0         36 f
+U2042/Y (NAND2)                             1         37 r
+U1103/A (NAND2)                             0         37 r
+U1103/Y (NAND2)                             1         38 f
+U1082/A (NAND2)                             0         38 f
+U1082/Y (NAND2)                             1         39 r
+U1104/A (NOT1)                              0         39 r
+U1104/Y (NOT1)                              1         40 f
+U1084/B (NOR2)                              0         40 f
+U1084/Y (NOR2)                              1         41 r
+U2043/A (NOR2)                              0         41 r
+U2043/Y (NOR2)                              1         42 f
+product17 (out)                             0         42 f
+---------------------------------------------------------------------------
+Data Required Time            45
+Data Arrival Time             42
+---------------------------------------------------------------------------
+Slack                          3
+}
+
+Input Vector
+{
+  a1  =  0
+  a2  =  0
+  a3  =  0
+  a4  =  1
+  a5  =  1
+  a6  =  1
+  a7  =  1
+  a8  =  0
+  a9  =  1
+  a10  =  1
+  b1  =  0
+  b2  =  1
+  b3  =  1
+  b4  =  f
+  b5  =  1
+  b6  =  1
+  b7  =  1
+  b8  =  0
+  b9  =  1
+  b10  =  1
+}
+
+Path  {  3  }
+
+A True Path List
+{
+---------------------------------------------------------------------------
+Pin    type                                Incr        Path delay
+---------------------------------------------------------------------------
+a7 (in)                                     0          0 r
+U1147/B (NAND2)                             0          0 r
+U1147/Y (NAND2)                             1          1 f
+U1148/A (NOT1)                              0          1 f
+U1148/Y (NOT1)                              1          2 r
+U1467/A (NAND2)                             0          2 r
+U1467/Y (NAND2)                             1          3 f
+U1470/A (NAND2)                             0          3 f
+U1470/Y (NAND2)                             1          4 r
+U1540/B (NOR2)                              0          4 r
+U1540/Y (NOR2)                              1          5 f
+U1541/A (NAND2)                             0          5 f
+U1541/Y (NAND2)                             1          6 r
+U1542/B (NAND2)                             0          6 r
+U1542/Y (NAND2)                             1          7 f
+U1550/A (NOT1)                              0          7 f
+U1550/Y (NOT1)                              1          8 r
+U1551/A (NAND2)                             0          8 r
+U1551/Y (NAND2)                             1          9 f
+U1552/B (NAND2)                             0          9 f
+U1552/Y (NAND2)                             1         10 r
+U1615/A (NOT1)                              0         10 r
+U1615/Y (NOT1)                              1         11 f
+U1616/A (NAND2)                             0         11 f
+U1616/Y (NAND2)                             1         12 r
+U1617/A (NAND2)                             0         12 r
+U1617/Y (NAND2)                             1         13 f
+U1631/B (NAND2)                             0         13 f
+U1631/Y (NAND2)                             1         14 r
+U1141/B (NAND2)                             0         14 f
+U1141/Y (NAND2)                             1         15 r
+U1142/A (NOT1)                              0         15 r
+U1142/Y (NOT1)                              1         16 f
+U1678/A (NAND2)                             0         16 f
+U1678/Y (NAND2)                             1         17 r
+U1679/A (NAND2)                             0         17 r
+U1679/Y (NAND2)                             1         18 f
+U1686/B (NAND2)                             0         18 f
+U1686/Y (NAND2)                             1         19 r
+U1688/A (NAND2)                             0         19 r
+U1688/Y (NAND2)                             1         20 f
+U1689/B (NAND2)                             0         20 f
+U1689/Y (NAND2)                             1         21 r
+U1690/B (NAND2)                             0         21 r
+U1690/Y (NAND2)                             1         22 f
+U1149/A (NAND2)                             0         22 f
+U1149/Y (NAND2)                             1         23 r
+U1150/A (NOT1)                              0         23 r
+U1150/Y (NOT1)                              1         24 f
+U1691/A (NAND2)                             0         24 f
+U1691/Y (NAND2)                             1         25 r
+U1694/A (NAND2)                             0         25 r
+U1694/Y (NAND2)                             1         26 f
+U1695/A (NOT1)                              0         26 f
+U1695/Y (NOT1)                              1         27 r
+U2021/A (NAND2)                             0         27 r
+U2021/Y (NAND2)                             1         28 f
+U2022/A (NAND2)                             0         28 f
+U2022/Y (NAND2)                             1         29 r
+U2028/A (NAND2)                             0         29 f
+U2028/Y (NAND2)                             1         30 r
+U2029/B (NAND2)                             0         30 r
+U2029/Y (NAND2)                             1         31 f
+U2035/A (NAND2)                             0         31 f
+U2035/Y (NAND2)                             1         32 r
+U2036/B (NAND2)                             0         32 r
+U2036/Y (NAND2)                             1         33 f
+U2037/B (NAND2)                             0         33 f
+U2037/Y (NAND2)                             1         34 r
+U2038/B (NAND2)                             0         34 r
+U2038/Y (NAND2)                             1         35 f
+U2039/B (NAND2)                             0         35 f
+U2039/Y (NAND2)                             1         36 r
+U2042/A (NAND2)                             0         36 r
+U2042/Y (NAND2)                             1         37 f
+U1103/A (NAND2)                             0         37 f
+U1103/Y (NAND2)                             1         38 r
+U1082/A (NAND2)                             0         38 r
+U1082/Y (NAND2)                             1         39 f
+U1104/A (NOT1)                              0         39 f
+U1104/Y (NOT1)                              1         40 r
+U1084/B (NOR2)                              0         40 r
+U1084/Y (NOR2)                              1         41 f
+U2043/A (NOR2)                              0         41 f
+U2043/Y (NOR2)                              1         42 r
+product17 (out)                             0         42 r
+---------------------------------------------------------------------------
+Data Required Time            45
+Data Arrival Time             42
+---------------------------------------------------------------------------
+Slack                          3
+}
+
+Input Vector
+{
+  a1  =  0
+  a2  =  0
+  a3  =  0
+  a4  =  0
+  a5  =  0
+  a6  =  1
+  a7  =  r
+  a8  =  1
+  a9  =  1
+  a10  =  0
+  b1  =  0
+  b2  =  1
+  b3  =  0
+  b4  =  1
+  b5  =  1
+  b6  =  0
+  b7  =  0
+  b8  =  0
+  b9  =  0
+  b10  =  1
+}
+

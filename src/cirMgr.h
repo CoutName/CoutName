@@ -39,7 +39,8 @@ public:
 	void Simulate(Circuit& , Path*);
 
 	////////////////////
-	Gate* build_dfs(Gate*,Circuit&);
+	Gate* build_dfs(Gate*);
+	void  build_dfs_1(Gate*, Circuit&);
 	Gate* find_path(Gate*, GateList&, vector<string>&, int, Circuit&);
 	void set_time();
 	void find_falsepath(Gate*);

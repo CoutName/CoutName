@@ -141,13 +141,16 @@ void CirMgr::print(){
 
 void CirMgr::dfs(){
 	for(size_t i=0;i<_poList.size();++i){
+		build_dfs(_poList[i]);
+	}
+	for(size_t i=0;i<_poList.size();++i){
+		for(size_t i=0;i<_dfsList.size();++i){
+			_dfsList[i]->flag=false;
+		}
 		Circuit tmpckt;
 		tmpckt.PO = _poList[i];
-		build_dfs(_poList[i],tmpckt);
+		build_dfs_1(_poList[i],tmpckt);
 		_circuits.push_back(tmpckt);
-	}
-	for(size_t i=0;i<_dfsList.size();++i){
-		_dfsList[i]->flag=false;
 	}
 	
 	cout<<"dfsList:======================================"<<endl;
@@ -527,10 +530,22 @@ string wireName(string str){
 	return sstr;
 }
 
-Gate* CirMgr::build_dfs(Gate* g, Circuit& tmpckt){
+Gate* CirMgr::build_dfs(Gate* g){
 	if(g->flag) return g;
-	if(g->A) build_dfs(g->A, tmpckt);
-	if(g->B) build_dfs(g->B, tmpckt);
+	if(g->A) build_dfs(g->A);
+	if(g->B) build_dfs(g->B);
+	if(g->flag==false){
+		g->flag=true;
+		if(g->type!="in"){
+			_dfsList.push_back(g);
+		}
+	}
+	return g;
+}
+void CirMgr::build_dfs_1(Gate* g, Circuit& tmpckt){
+	if(g->flag) return ;
+	if(g->A) build_dfs_1(g->A, tmpckt);
+	if(g->B) build_dfs_1(g->B, tmpckt);
 	if(g->flag==false){
 		g->flag=true;
 		if(g->type!="in"){
@@ -538,7 +553,7 @@ Gate* CirMgr::build_dfs(Gate* g, Circuit& tmpckt){
 			tmpckt.DFS_list.push_back(g);
 		}
 	}
-	return g;
+	return ;
 }
 
 Gate* CirMgr::find_path(Gate* g, GateList& tmppath, vector<string>& port, int slack, Circuit& tmpckt){
