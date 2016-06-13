@@ -11,8 +11,30 @@ fstream fout;
 int main(){
 	CirMgr* cirMgr =new CirMgr;
 	string file;
+	#ifdef run1
+	TIME_C=45; SLACK_C=4;
+	file="case1";
+	#elif defined run2
+	TIME_C=43; SLACK_C=10;
+	file="case2";
+	#elif defined run3
+	TIME_C=31; SLACK_C=6;
+	file="case3";
+	#elif defined run4
+	TIME_C=45; SLACK_C=6;
+	file="case4";
+	#elif defined run5
+	TIME_C=47; SLACK_C=10;
+	file="case5";
+	#else
 	cout<<"Input file name: ";
 	cin>>file;
+	cout<<"Time constraint: ";
+	cin>>TIME_C;
+	cout<<"Slack constraint: ";
+	cin>>SLACK_C;
+	#endif
+	
 	if(!cirMgr->read(file)) return 1;
 	cout<<"Read successfully!"<<endl;	
 	string outputfile=file+"_true_path_set";
@@ -20,12 +42,16 @@ int main(){
 	fout<<"Header  {  A True Path Set  }"<<endl<<endl;
 	fout<<"Benchmark  {  "<<file<<"  }"<<endl<<endl;
 	
-
-	cout<<"Time constraint: ";
-	cin>>TIME_C;
-	cout<<"Slack constraint: ";
-	cin>>SLACK_C;
-	
+	cirMgr->dfs();
+	cirMgr->path();
+	string str;
+	cout<<"b(bruteforce)/o(outputtest): ";
+	cin>>str;
+	if(str=="b") cirMgr->brute();
+	else if(str=="o") cirMgr->output_test();
+	else cout<<"Invalid command!"<<endl;
+	cirMgr->print();
+	/*
 	string str;
 	while(true){
 		cout<<"p(print)/q(quit)/r(read)/d(dfs)/pa(path)/f(findfalse)/b(bruteforce)... : ";
@@ -61,10 +87,7 @@ int main(){
 		if(str=="b"){
 			cirMgr->brute();
 		}
-		if(str=="o"){
-			cirMgr->output_test();
-		}
-	}
+	}*/
 	delete cirMgr;
 	return 0;
 }

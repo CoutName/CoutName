@@ -10,6 +10,8 @@ extern fstream fout;
 CirMgr::CirMgr(){}
 CirMgr::~CirMgr(){}
 
+int truepathNum=0;
+
 bool CirMgr::read(string file){
 	fstream fin;
 	fin.open(file.c_str(),ios::in);
@@ -156,7 +158,6 @@ void CirMgr::dfs(){
 }
 
 void CirMgr::path(){
-	
 	for(size_t i=0;i<_poList.size();++i){
 		//Circuit	tmpckt;
 		GateList tmpPath;
@@ -249,6 +250,7 @@ void CirMgr::brute(){
 	}
 }
 void CirMgr::output_test(){
+	int truepathNum=0;//
 	for(int  i=0; i<_circuits.size(); i++){
 		for(int j=0; j<_circuits[i].path_list.size();j++){
 			Set_Test(_circuits[i].path_list[j],0);
@@ -419,6 +421,23 @@ void CirMgr::Simulate(Circuit& ckt, Path* t_path){
 					tmp.push_back(t_path->pathKey);
 					in_ans.insert(pair<string, vector<string> >(in_pattern, tmp));
 				}
+				////////fout
+				if(_pathMap.find(t_path->pathKey)!=_pathMap.end()){
+					truepathNum++;
+					fout<<"Path  {  "<<truepathNum<<"  }"<<endl<<endl;
+					Path* path=(*_pathMap.find(t_path->pathKey)).second;
+					path->print();
+					_pathMap.erase(t_path->pathKey);
+					fout<<"Input Vector"<<endl<<"{"<<endl;
+					string pathInName=path->gates.back()->name;
+					for(size_t j=0;j<_piList.size();++j){
+						fout<<"  "<<_piList[j]->name<<"  =  ";
+						if(pathInName==_piList[j]->name) fout<<path->inType<<endl;
+						else fout<<_piList[j]->valueY<<endl;
+					}
+					fout<<"}"<<endl<<endl;
+				}
+				/////////
 		//		cout<<"We success!!!"<<endl;
 			}
 		}
