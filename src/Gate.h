@@ -13,7 +13,7 @@ public:
     string name;
 	string type;
 	bool flag;
-
+	bool flag1;
 	vector<Gate*> Y;
 	vector<string> port;
 	Gate* A;

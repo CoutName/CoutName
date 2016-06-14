@@ -141,7 +141,10 @@ void CirMgr::dfs(){
 	for(size_t i=0;i<_poList.size();++i){
 		Circuit tmpckt;
 		tmpckt.PO = _poList[i];
-		build_dfs(_poList[i],tmpckt);
+		build_dfs(_poList[i]);
+		build_dfs1(_poList[i],tmpckt);
+		for(size_t i=0;i<tmpckt.DFS_list.size();i++)
+			tmpckt.DFS_list[i]->flag1 = false;
 		_circuits.push_back(tmpckt);
 	}
 	for(size_t i=0;i<_dfsList.size();++i){
@@ -383,7 +386,6 @@ void CirMgr::Simulate(Circuit& ckt, Path* t_path){
 		
 		for(size_t i=0;i<ckt.PI_list.size();++i){ //assign input value
 			ckt.PI_list[i]->timeY=0;
-		//	cout<<_piList[i]->name<<" "<<_piList[i]->valueY<<endl;
 		}
 		for(size_t i=0;i<ckt.DFS_list.size();++i){ //simulate
 			Gate* g = ckt.DFS_list[i];
@@ -392,13 +394,24 @@ void CirMgr::Simulate(Circuit& ckt, Path* t_path){
 			else if(g->type=="NAND2") simNAND2(g);
 			else if(g->type=="NOR2") simNOR2(g);
 			else simPO(g);
-			//cout<<g->name<<"; simValueY: "<<g->valueY<<endl;
 		}
 		
-		if(!(delay_conf(t_path) || (ckt.PO->valueY != ckt.PO->Out_test))){
+	/*	if(t_path->pathKey == "fA0U15BU13AU1AU12BM1"){
+			cout<<t_path->pathKey<<endl;
+			for(size_t i=0;i<ckt.PI_list.size();++i){ //assign input value
+				cout<<ckt.PI_list[i]->name<<":"<<ckt.PI_list[i]->valueY<<" ";
+			}	
+			if(delay_conf(t_path)) cout<<"delay wrong"<<endl;
+		 	if (ckt.PO->valueY != ckt.PO->Out_test) {		
+				cout<<"output wrong!"<<endl;
+				cout<<"Y:"<<ckt.PO->valueY<<" O:"<<ckt.PO->Out_test<<endl;
+			}
+		}
+	*/	if(!(delay_conf(t_path) || (ckt.PO->valueY != ckt.PO->Out_test))){
+			cout<<"true!!"<<endl;
 			string in_pattern = "";
 			for(size_t i=0; i<_piList.size();i++){
-				if(!_piList[i]->valueY)
+				if(_piList[i]->valueY)
 					in_pattern.append("X");
 				else{
 					stringstream	ss;
@@ -508,15 +521,27 @@ string wireName(string str){
 	return sstr;
 }
 
-Gate* CirMgr::build_dfs(Gate* g, Circuit& tmpckt){
+void CirMgr::build_dfs1(Gate* g, Circuit& tmpckt){
+	if(g->flag1) return ;
+	if(g->A) build_dfs1(g->A, tmpckt);
+	if(g->B) build_dfs1(g->B, tmpckt);
+	if(g->flag1==false){
+		g->flag1=true;
+		if(g->type!="in"){
+			tmpckt.DFS_list.push_back(g);
+			cout<<"push_back DFS"<<endl;
+		}
+	}
+	return ;
+}
+Gate* CirMgr::build_dfs(Gate* g){
 	if(g->flag) return g;
-	if(g->A) build_dfs(g->A, tmpckt);
-	if(g->B) build_dfs(g->B, tmpckt);
+	if(g->A) build_dfs(g->A);
+	if(g->B) build_dfs(g->B);
 	if(g->flag==false){
 		g->flag=true;
 		if(g->type!="in"){
 			_dfsList.push_back(g);
-			tmpckt.DFS_list.push_back(g);
 		}
 	}
 	return g;
